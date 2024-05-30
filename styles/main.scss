@@ -1,0 +1,141 @@
+@font-face {
+  font-family: "Start Font";
+  src: url("./MaldiniBold-OVZO6.ttf");
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  background-image: url("../images/bg.png");
+  background-size: cover;
+}
+
+#playing-space {
+  width: auto;
+  height: 30vh;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  margin-bottom: 0.2rem;
+  transform: translateX(-50%);
+  padding: 1rem;
+  display: flex;
+  .card-in-hand {
+    cursor: pointer;
+    z-index: 1;
+    box-shadow: 4px 4px 12px 2px rgba(black, 0.6);
+    transition: transform 0.2s;
+    border-radius: 8px;
+    transform: rotate3d(0.5, -0.5, 0, 30deg);
+    &:not(:first-child) {
+      margin-left: -5rem;
+    }
+    &:hover,
+    &:focus-within {
+      transform: translateY(-1rem);
+    }
+    &:hover ~ .card-in-hand,
+    &:focus-within ~ .card-in-hand {
+      transform: translateX(5rem) rotate3d(0.5, -0.5, 0, 30deg);
+    }
+    &:active {
+      outline: #d8a252 4px solid;
+    }
+  }
+}
+
+#play-table {
+  position: absolute;
+  left: 43%;
+  top: 35%;
+  opacity: 0;
+  img {
+    height: 25vh;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+      rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    position: absolute;
+  }
+}
+
+.player-table {
+  position: absolute;
+  opacity: 1;
+  img {
+    height: 20vh;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+      rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    position: absolute;
+  }
+}
+
+#player0-table {
+  left: 6%;
+  bottom: 26%;
+}
+
+#player1-table {
+  left: 14%;
+  top: 6%;
+}
+
+#player2-table {
+  right: 17%;
+  top: 8%;
+}
+
+#player3-table {
+  right: 13%;
+  bottom: 26%;
+}
+
+#start-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-size: 3rem;
+  letter-spacing: 2px;
+  font-family: "Start Font";
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #eab86c;
+  color: #282828;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 1s;
+  &:hover {
+    background-color: #ffc977;
+  }
+  &:active {
+    background-color: #eab86c7c;
+  }
+  &:disabled {
+    cursor: pointer;
+    background-color: #eab86c7c;
+  }
+}
+
+.thinking-gif {
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+  position: absolute;
+  margin: 1rem;
+  width: 100px;
+  max-width: 10%;
+}
+#thinker0 {
+  bottom: 0px;
+  left: 50%;
+}
+#thinker1 {
+  top: 50%;
+}
+#thinker2 {
+  right: 50%;
+}
+#thinker3 {
+  bottom: 50%;
+  right: 0px;
+}
