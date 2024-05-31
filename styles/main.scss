@@ -1,5 +1,5 @@
 @font-face {
-  font-family: "Start Font";
+  font-family: "Maldini";
   src: url("./MaldiniBold-OVZO6.ttf");
 }
 
@@ -8,6 +8,7 @@ body {
   height: 100%;
   background-image: url("../images/bg.png");
   background-size: cover;
+  overflow-x: hidden;
 }
 
 #playing-space {
@@ -17,7 +18,7 @@ body {
   left: 50%;
   bottom: 0;
   margin-bottom: 0.2rem;
-  transform: translateX(-50%);
+  transform: translateX(-47%);
   padding: 1rem;
   display: flex;
   .card-in-hand {
@@ -66,26 +67,51 @@ body {
       rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     position: absolute;
   }
+  color: #c93f3f;
+  .player-name {
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    font-family: "Maldini";
+    font-weight: bold;
+    position: absolute;
+    text-wrap: nowrap;
+  }
 }
 
 #player0-table {
-  left: 6%;
-  bottom: 26%;
+  left: 14%;
+  bottom: 24%;
+  .player-name {
+    left: -13vw;
+    top: -4vh;
+  }
 }
 
 #player1-table {
-  left: 14%;
-  top: 6%;
+  left: 13%;
+  top: 28%;
+  .player-name {
+    top: -25vh;
+    left: -12vw;
+  }
 }
 
 #player2-table {
-  right: 17%;
-  top: 8%;
+  left: 69%;
+  top: 4%;
+  .player-name {
+    top: -2vh;
+    right: -28vw;
+  }
 }
 
 #player3-table {
-  right: 13%;
-  bottom: 26%;
+  right: 9%;
+  bottom: 62%;
+  .player-name {
+    bottom: -29vh;
+    left: -4vw;
+  }
 }
 
 #start-button {
@@ -95,7 +121,7 @@ body {
   transform: translateX(-50%) translateY(-50%);
   font-size: 3rem;
   letter-spacing: 2px;
-  font-family: "Start Font";
+  font-family: "Maldini";
   text-align: center;
   font-weight: bold;
   padding: 10px;
@@ -124,6 +150,7 @@ body {
   margin: 1rem;
   width: 100px;
   max-width: 10%;
+  pointer-events: none;
 }
 #thinker0 {
   bottom: 0px;

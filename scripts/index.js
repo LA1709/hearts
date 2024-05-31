@@ -8,13 +8,10 @@ window.onload = () => {
 }
 
 const checkIfSpecial = () => {
-    // Remove this when you make the other players intelligent too
-    if (turn != pID) return;
-
     const suitStart = Math.floor(cardsPlayed[0][1] / 13) * 13;
     if (players[turn].cards.every(
         (card) => {
-            return (card < suitStart || card > (suitStart + 13));
+            return (card < suitStart || card >= (suitStart + 13));
         }
     )) isSpecialMove = true;
 }
@@ -23,7 +20,7 @@ const getOptimalMove = (cards) => {
     if (cardsPlayed.length == 0) return cards[0];
     const suitEnd = (Math.floor(cardsPlayed[0][1] / 13) * 13) + 13;
     const reverseArr = cards.slice().reverse();
-    const lastOfSuit = reverseArr.find(card => card <= suitEnd);
+    const lastOfSuit = reverseArr.find(card => card < suitEnd);
 
     // If the player does not have any card in the suit at hand,
     // play the biggest card they have
@@ -44,23 +41,23 @@ const nextTurn = () => {
         });
         turn = cardsPlayed[hand][0];
         players[turn].keepCards(Object.values(cardsPlayed).map(item => item[1]));
-        setTimeout(() => givePileToPlayer(turn), 2500);
+        setTimeout(() => givePileToPlayer(turn), 1500);
     } else {
         const x = Math.floor(cardsPlayed[0][1] / 13) * 13;
-        checkIfSpecial();
         turn++; if (turn == 4) turn = 0;
+        checkIfSpecial();
+        document.getElementById("thinker" + turn).style.opacity = 1;
+        allowedMoves = [x, x + 13];
         if (turn != pID)
             setTimeout(
                 () => players[turn].playCard(turn, getOptimalMove(players[turn].cards)),
                 Math.floor(Math.random() * (1500)) + 500
             );
-        document.getElementById("thinker" + turn).style.opacity = 1;
-        allowedMoves = [x, x + 13];
     }
 }
 
 const showPlay = (card) => {
-    console.log(`Player no. ${turn} played card no. ${card} | `, `Heart ${heartBroken ? "" : "not"} broken!`);
+    // console.log(`Player no. ${turn} played card no. ${card} | `, `Heart ${heartBroken ? "" : "not"} broken!`);
     const a = (Math.floor(Math.random() * 31) + 5) * (Math.random() > 0.5 ? 1 : -1);
     const b = Math.floor(Math.random() * 21) * (Math.random() > 0.5 ? 1 : -1);
     sprites[card].style.transform = `rotate(${a}deg) translateX(${b}px)`;
@@ -78,7 +75,6 @@ const givePileToPlayer = (player) => {
         playerTable.appendChild(backCard);
     }
     document.getElementById("play-table").innerHTML = "";
-    checkIfSpecial();
     cardsPlayed = [];
     document.getElementById("thinker" + turn).style.opacity = 1;
     allowedMoves = [0, 52];
@@ -121,14 +117,16 @@ const isValidMove = (c) => (
     )
 );
 
-// Only gets triggerred on click by the user, not when the computer plays
 const triggerPlayCard = (event) => {
+    console.log(turn != pID ? "Not your turn!" :
+        isValidMove(event.target.id) ? "Normal play, well done :)" :
+            isSpecialMove ? "Special move, nice ;)" : `Invalid Move!`
+    );
     if (turn != pID) return
     if (isSpecialMove || isValidMove(event.target.id)) {
         document.getElementById("playing-space").removeChild(event.target);
         players[pID].playCard(pID, parseInt(event.target.id));
     } else {
-        // make red outline on css "active" selector for move not allowed
     }
 }
 
