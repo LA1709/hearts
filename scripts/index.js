@@ -27,12 +27,23 @@ const getOptimalMove = (cards) => {
         // make these functions, then randomly call one of them -
         if (cardsMap[0].length > 0) {
             if (cardHistory[0].length < 9) return cardsMap[0][cardsMap[0].length - 1];
-            if ((cardHistory[0].length + cardsMap[0].length) < 13) return cardsMap[0][0];
-            // check if the card you have is the biggest left in that suit
+            if ((cardHistory[0].length + cardsMap[0].length) < 13) {
+                if (
+                    _.range(cardsMap[0][0]).every(card =>
+                        cardHistory[0].includes(card)
+                    )
+                ) return cardsMap[0][0];
+            }
         }
         if (cardsMap[1].length > 0) {
             if (cardHistory[1].length < 9) return cardsMap[1][cardsMap[1].length - 1];
-            if ((cardHistory[1].length + cardsMap[1].length) < 13) return cardsMap[1][0];
+            if ((cardHistory[1].length + cardsMap[1].length) < 13) {
+                if (
+                    _.range(13, cardsMap[1][0]).every(card =>
+                        cardHistory[1].includes(card)
+                    )
+                ) return cardsMap[1][0];
+            }
         }
         if (
             cardsMap[3].length > 0 &&
@@ -51,17 +62,22 @@ const getOptimalMove = (cards) => {
                         : cardsMap[2][0]
         );
     }
+
     const suitPlayed = Math.floor(cardsPlayed[0][1] / 13);
+
     if (cardsMap[suitPlayed].length) {
+        const containsPoint = cardsPlayed.some(move =>
+            (Math.floor(move[1] / 13) == 2 || move[1] == 49)
+        );
         if (suitPlayed < 2) {
-            if (cardHistory[suitPlayed].length < 9)
-                return cardsMap[suitPlayed][cardsMap[suitPlayed].length - 1];
-            return cardsMap[suitPlayed][0];
+            if (cardHistory[suitPlayed].length > 9 || containsPoint)
+                return cardsMap[suitPlayed][0];
+            return cardsMap[suitPlayed][cardsMap[suitPlayed].length - 1];
         }
         if (suitPlayed == 3) {
             if (cardHistory[3].includes(49))
                 return cardsMap[3][cardsMap[3].length - 1];
-            if (cardsMap[3].includes(49)) {
+            if (cardsMap[3].includes(49) || cardsPlayed.length == 3) {
                 const temp = cardsMap[3].filter(card => card != 49).reverse();
                 return temp[temp.length - 1];
             }
@@ -70,9 +86,9 @@ const getOptimalMove = (cards) => {
         }
         return cardsMap[suitPlayed][0];
     }
-    // If there is no card of the suit left with this player
+
     if (cardsMap[3].length) {
-        if (cardsMap[3].includes(49)) return 49;
+        if (cardsMap[3].includes(49) && cards.length < 13) return 49;
         if (cardsMap[3][cardsMap[3].length - 1] > 49)
             return cardsMap[3][cardsMap[3].length - 1]
     }
@@ -203,6 +219,7 @@ const startGame = () => {
     players.push(new Player(playerCards[1]));
     players.push(new Player(playerCards[2]));
     players.push(new Player(playerCards[3]));
+    console.log(playerCards);
     drawCards(players[pID]);
     findStartingPlayer();
     startBtn.innerHTML = "Play";
