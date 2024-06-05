@@ -64,20 +64,22 @@ body {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   position: absolute;
 }
-.player-table .player-name {
+.player-table .player-info {
+  opacity: 0;
   font-size: 2.5rem;
   letter-spacing: 2px;
   font-family: "Maldini";
   font-weight: bold;
   position: absolute;
   text-wrap: nowrap;
+  transition: opacity 0.4s ease-in;
 }
 
 #player0-table {
   left: 14%;
   bottom: 24%;
 }
-#player0-table .player-name {
+#player0-table .player-info {
   left: -13vw;
   top: -4vh;
 }
@@ -86,7 +88,7 @@ body {
   left: 13%;
   top: 28%;
 }
-#player1-table .player-name {
+#player1-table .player-info {
   top: -25vh;
   left: -12vw;
 }
@@ -95,7 +97,7 @@ body {
   left: 69%;
   top: 4%;
 }
-#player2-table .player-name {
+#player2-table .player-info {
   top: -2vh;
   right: -28vw;
 }
@@ -104,7 +106,7 @@ body {
   right: 9%;
   bottom: 62%;
 }
-#player3-table .player-name {
+#player3-table .player-info {
   bottom: -29vh;
   left: -4vw;
 }

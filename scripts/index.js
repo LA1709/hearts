@@ -1,10 +1,11 @@
-var sprites, turn, pID = 0, allowedMoves = [-1, 0], cardsPlayed = [], players = [], heartBroken = false, isSpecialMove = false;
+var sprites, turn, pID = 0, allowedMoves = [-1, 0], cardsPlayed = [], players = [], heartBroken = false, cardHistory = Array(4).fill().map(() => []), isSpecialMove = false, newWin;
 
 window.onload = () => {
     sprites = getImagesArray();
     const startBtn = document.getElementById("start-button");
     startBtn.innerHTML = "Start";
     startBtn.disabled = false;
+    // newWin = window.open("");
 }
 
 const checkIfSpecial = () => {
@@ -17,16 +18,66 @@ const checkIfSpecial = () => {
 }
 
 const getOptimalMove = (cards) => {
-    if (cardsPlayed.length == 0) return cards[0];
-    const suitEnd = (Math.floor(cardsPlayed[0][1] / 13) * 13) + 13;
-    const reverseArr = cards.slice().reverse();
-    const lastOfSuit = reverseArr.find(card => card < suitEnd);
-
-    // If the player does not have any card in the suit at hand,
-    // play the biggest card they have
-    if (!lastOfSuit) return reverseArr[0];
-
-    return lastOfSuit;
+    // can store player's cards as a map itself to avoid this
+    let cardsMap = [[], [], [], []];
+    cards.forEach(card =>
+        cardsMap[Math.floor(card / 13)].push(card)
+    );
+    if (cardsPlayed.length == 0) {
+        // make these functions, then randomly call one of them -
+        if (cardsMap[0].length > 0) {
+            if (cardHistory[0].length < 9) return cardsMap[0][cardsMap[0].length - 1];
+            if ((cardHistory[0].length + cardsMap[0].length) < 13) return cardsMap[0][0];
+            // check if the card you have is the biggest left in that suit
+        }
+        if (cardsMap[1].length > 0) {
+            if (cardHistory[1].length < 9) return cardsMap[1][cardsMap[1].length - 1];
+            if ((cardHistory[1].length + cardsMap[1].length) < 13) return cardsMap[1][0];
+        }
+        if (
+            cardsMap[3].length > 0 &&
+            cardsMap[3][cardsMap[3].length - 1] < 49 &&
+            (cardHistory[3].length + cardsMap[3].length) < 13
+        ) {
+            if (cardHistory[3].includes(49)) return cardsMap[3][cardsMap[3].length - 1];
+            return cardsMap[3][0];
+        }
+        // Can start with a bigger heart at times
+        if (heartBroken) return cardsMap[2][0];
+        return (
+            cardsMap[0].length ? cardsMap[0][0]
+                : cardsMap[1].length ? cardsMap[1][0]
+                    : cardsMap[3].length ? cardsMap[3][cardsMap[3].length - 1]
+                        : cardsMap[2][0]
+        );
+    }
+    const suitPlayed = Math.floor(cardsPlayed[0][1] / 13);
+    if (cardsMap[suitPlayed].length) {
+        if (suitPlayed < 2) {
+            if (cardHistory[suitPlayed].length < 9)
+                return cardsMap[suitPlayed][cardsMap[suitPlayed].length - 1];
+            return cardsMap[suitPlayed][0];
+        }
+        if (suitPlayed == 3) {
+            if (cardHistory[3].includes(49))
+                return cardsMap[3][cardsMap[3].length - 1];
+            if (cardsMap[3].includes(49)) {
+                const temp = cardsMap[3].filter(card => card != 49).reverse();
+                return temp[temp.length - 1];
+            }
+            const temp = cardsMap[3].filter(card => card < 49).reverse();
+            return temp[temp.length - 1];
+        }
+        return cardsMap[suitPlayed][0];
+    }
+    // If there is no card of the suit left with this player
+    if (cardsMap[3].length) {
+        if (cardsMap[3].includes(49)) return 49;
+        if (cardsMap[3][cardsMap[3].length - 1] > 49)
+            return cardsMap[3][cardsMap[3].length - 1]
+    }
+    if (cardsMap[2].length) return cardsMap[2][cardsMap[2].length - 1];
+    return cards[cards.length - 1];
 }
 
 const nextTurn = () => {
@@ -57,11 +108,11 @@ const nextTurn = () => {
 }
 
 const showPlay = (card) => {
-    // console.log(`Player no. ${turn} played card no. ${card} | `, `Heart ${heartBroken ? "" : "not"} broken!`);
     const a = (Math.floor(Math.random() * 31) + 5) * (Math.random() > 0.5 ? 1 : -1);
     const b = Math.floor(Math.random() * 21) * (Math.random() > 0.5 ? 1 : -1);
     sprites[card].style.transform = `rotate(${a}deg) translateX(${b}px)`;
     document.getElementById("play-table").appendChild(sprites[card]);
+    cardHistory[Math.floor(card / 13)].push(card);
     nextTurn();
 }
 
@@ -94,8 +145,9 @@ class Player {
         cardsPlayed.push([pid, cid]);
         this.cards.splice(this.cards.indexOf(cid), 1);
         if (isSpecialMove) isSpecialMove = false;
-        if (!heartBroken && cid > 25 && cid < 39)
+        if (!heartBroken && cid > 25 && cid < 38)
             heartBroken = true;
+        // newWin.console.log(`Player ${pid} played ${cid}`, this.cards);
         showPlay(cid);
     }
     keepCards(cards) {
@@ -112,8 +164,8 @@ const drawCards = (player) => {
 }
 
 const isValidMove = (c) => (
-    (c > allowedMoves[0] && c < allowedMoves[1]) && (heartBroken ?
-        true : !(c > 25 && c < 39)
+    (c >= allowedMoves[0] && c < allowedMoves[1]) && (heartBroken ?
+        true : !(c > 25 && c < 38)
     )
 );
 
@@ -126,7 +178,6 @@ const triggerPlayCard = (event) => {
     if (isSpecialMove || isValidMove(event.target.id)) {
         document.getElementById("playing-space").removeChild(event.target);
         players[pID].playCard(pID, parseInt(event.target.id));
-    } else {
     }
 }
 
@@ -156,6 +207,10 @@ const startGame = () => {
     findStartingPlayer();
     startBtn.innerHTML = "Play";
     startBtn.style.opacity = 0;
+    playerInfoElements = document.getElementsByClassName("player-info")
+    for (element of playerInfoElements) {
+        element.style.opacity = 1
+    };
     document.getElementById("play-table").style.opacity = 1;
-    setTimeout(() => startBtn.style.display = "none", 1100)
+    setTimeout(() => startBtn.style.display = "none", 1000)
 }

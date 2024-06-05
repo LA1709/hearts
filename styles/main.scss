@@ -68,20 +68,22 @@ body {
     position: absolute;
   }
   color: #c93f3f;
-  .player-name {
+  .player-info {
+    opacity: 0;
     font-size: 2.5rem;
     letter-spacing: 2px;
     font-family: "Maldini";
     font-weight: bold;
     position: absolute;
     text-wrap: nowrap;
+    transition: opacity 0.4s ease-in;
   }
 }
 
 #player0-table {
   left: 14%;
   bottom: 24%;
-  .player-name {
+  .player-info {
     left: -13vw;
     top: -4vh;
   }
@@ -90,7 +92,7 @@ body {
 #player1-table {
   left: 13%;
   top: 28%;
-  .player-name {
+  .player-info {
     top: -25vh;
     left: -12vw;
   }
@@ -99,7 +101,7 @@ body {
 #player2-table {
   left: 69%;
   top: 4%;
-  .player-name {
+  .player-info {
     top: -2vh;
     right: -28vw;
   }
@@ -108,7 +110,7 @@ body {
 #player3-table {
   right: 9%;
   bottom: 62%;
-  .player-name {
+  .player-info {
     bottom: -29vh;
     left: -4vw;
   }
